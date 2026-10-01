@@ -1,0 +1,26 @@
+{
+  "name": "webnad/rubika-group-manager-php",
+  "description": "Fast PHP Rubika Bot API group manager with SQLite, anti-spam locks, warnings and web panel.",
+  "type": "project",
+  "license": "MIT",
+  "require": {
+    "php": ">=8.1",
+    "ext-curl": "*",
+    "ext-pdo": "*",
+    "ext-json": "*",
+    "ext-mbstring": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "RubikaGM\\": "src/"
+    }
+  },
+  "suggest": {
+    "ext-pdo_sqlite": "Required when database.driver is sqlite",
+    "ext-pdo_mysql": "Required when database.driver is mysql",
+    "ext-zip": "Required for migration export/import ZIP files"
+  },
+  "scripts": {
+    "test": "php tests/selftest.php"
+  }
+}
