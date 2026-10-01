@@ -1,0 +1,54 @@
+راهنمای نصب نسخه کامل Rubika Group Manager v89
+================================================
+
+پیش‌نیاز:
+- PHP 8.1 یا جدیدتر
+- HTTPS فعال روی دامنه
+- افزونه‌های PHP: curl, json, mbstring, pdo
+- برای SQLite: pdo_sqlite + sqlite3
+- برای MySQL: pdo_mysql
+
+نصب روی cPanel / DirectAdmin:
+1) یک پوشه بساز، مثال: public_html/spam
+2) محتوای ZIP را داخل همان پوشه Extract کن.
+3) مطمئن شو این پوشه‌ها وجود دارند و قابل نوشتن‌اند:
+   storage, logs, backups, data
+   معمولاً 755 کافی است؛ اگر PHP اجازه نوشتن ندارد 775 را امتحان کن.
+4) در مرورگر یک بار باز کن:
+   https://YOUR-DOMAIN/spam/setup.php
+5) فایل storage/setup.key ساخته می‌شود. از File Manager بازش کن و کلید داخلش را کپی کن.
+6) سپس باز کن:
+   https://YOUR-DOMAIN/spam/setup.php?key=SETUP_KEY
+7) در فرم نصب وارد کن:
+   - Bot Token رسمی روبیکا
+   - Owner ID
+   - نام ربات
+   - Cron Key حداقل 16 کاراکتر
+   - Webhook Key حداقل 16 کاراکتر
+   - Database: برای نصب ساده SQLite
+8) گزینه تنظیم خودکار Webhook را روشن بگذار و نصب را انجام بده.
+9) اگر نصب موفق بود، setup.php و setup_v80.php را از هاست حذف کن.
+
+تست Webhook از SSH:
+cd ~/public_html/spam
+WEBHOOK_KEY=$(php -r '$c=require "config.php"; echo $c["webhook_key"] ?? $c["cron_key"] ?? "";')
+php set_webhook_cli.php "https://YOUR-DOMAIN/spam/webhook.php?key=$WEBHOOK_KEY"
+
+تست دسترسی Webhook:
+curl -i -X POST "https://YOUR-DOMAIN/spam/webhook.php?key=$WEBHOOK_KEY" -H "Content-Type: application/json" -d '{}'
+خروجی سالم: {"ok":true,"ignored":true}
+
+Cron پیام همگانی در cPanel:
+* * * * * /usr/local/bin/php /home/CPANEL_USER/public_html/spam/cron_broadcast.php >/dev/null 2>&1
+
+نکات v89:
+- config_version باید 89 باشد (نصاب جدید آن را خودکار می‌سازد).
+- مالک و ادمین‌های داخلی گروه از قفل‌ها معاف‌اند.
+- تشخیص GIF/MP4 مبهم فعال است.
+- اگر از نسخه قبلی آپدیت می‌کنی، config.php و دیتابیس قبلی را حذف نکن؛ فقط فایل‌های پچ را ادغام کن و کلیدهای v89 را به config اضافه کن.
+
+امنیت بعد از نصب:
+- setup.php و setup_v80.php را حذف کن.
+- اگر ابزار مهاجرت لازم نداری migration_export.php و migration_import.php را هم حذف کن.
+- debug و debug_raw_webhook را در حالت عادی false نگه دار.
+- cron_key و webhook_key را طولانی، تصادفی و متفاوت انتخاب کن.

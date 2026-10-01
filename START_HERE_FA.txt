@@ -1,0 +1,29 @@
+راهنمای شروع سریع Rubika Group Manager PHP
+
+1) سورس را در مسیر هاست آپلود کن، مثلا:
+   ~/public_html/spam
+
+2) یک بار https://DOMAIN.com/spam/setup.php را باز کن.
+   کلید را از storage/setup.key در File Manager بخوان و سپس باز کن:
+   https://DOMAIN.com/spam/setup.php?key=کلید_داخل_فایل
+
+3) نصاب هر دو endpoint را ثبت می‌کند. برای ثبت مجدد داخل SSH بزن:
+   cd ~/public_html/spam
+   WEBHOOK_KEY=$(php -r '$c=require "config.php"; echo $c["webhook_key"] ?? $c["cron_key"] ?? "";')
+   php set_webhook_cli.php "https://DOMAIN.com/spam/webhook.php?key=$WEBHOOK_KEY"
+
+4) تست وبهوک:
+   curl -i -X POST "https://DOMAIN.com/spam/webhook.php?key=$WEBHOOK_KEY" -H "Content-Type: application/json" -d '{}'
+
+5) اگر جواب {"ok":true,"ignored":true} آمد، وبهوک سالم است.
+
+6) کرون پیام همگانی:
+   * * * * * /usr/local/bin/php /home/USER/public_html/spam/cron_broadcast.php >/dev/null 2>&1
+
+7) بعد از نصب فایل‌های زیر را حذف کن:
+   setup.php
+   setup_v80.php
+   migration_export.php اگر انتقال لازم نداری
+   migration_import.php اگر انتقال لازم نداری
+
+راهنمای کامل داخل پوشه docs است.
