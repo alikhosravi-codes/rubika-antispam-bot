@@ -1,0 +1,15 @@
+# این بخش را داخل server مربوط به دامنه قرار دهید و مسیر /spam/ را با مسیر نصب عوض کنید.
+location ~ ^/spam/(?:storage|logs|backups|data)/ {
+    deny all;
+    return 404;
+}
+
+location ~ ^/spam/(?:config(?:\.sample)?\.php|bootstrap\.php|worker\.php|cron\.php|set_webhook_cli\.php|migration_(?:export|import)\.php|setup\.key|composer\.(?:json|lock)|README.*|LICENSE)$ {
+    deny all;
+    return 404;
+}
+
+location ~ ^/spam/.*\.(?:zip|sql|sqlite|db|log|bak|backup|key)$ {
+    deny all;
+    return 404;
+}
