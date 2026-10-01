@@ -1,0 +1,15 @@
+[Unit]
+Description=Rubika Group Manager PHP Bot
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/RubikaGroupManagerPHP
+ExecStart=/usr/bin/php /opt/RubikaGroupManagerPHP/worker.php
+Restart=always
+RestartSec=3
+User=www-data
+Group=www-data
+
+[Install]
+WantedBy=multi-user.target
